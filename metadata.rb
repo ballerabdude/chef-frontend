@@ -1,0 +1,7 @@
+name             'chef-frontend'
+maintainer       'YOUR_NAME'
+maintainer_email 'YOUR_EMAIL'
+license          'All rights reserved'
+description      'Installs/Configures chef-frontend'
+long_description 'Installs/Configures chef-frontend'
+version          '0.1.0'

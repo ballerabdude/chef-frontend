@@ -1,0 +1,33 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: ubuntu-14.04
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.33.7"}]
+      customize:
+        memory: 1536
+suites:
+  - name: default
+    run_list:
+      - recipe[chef-frontend::default]
+    attributes:
+      chef-frontend:
+        app:
+          directory: '~/chef-frontend-example-app'
+          repository:
+            git_url: ''
+            revision: 'HEAD'
+          gulp_build_task: 'gulp build --stage production'
+          build_folder_in_app: '~/chef-frontend-example-app'
+        project_init_commends:
+          - 'npm install'
+          - 'bower install'
+        global_npm_packages:
+          - 'gulp'
+          - 'bower'
