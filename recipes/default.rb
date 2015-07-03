@@ -19,5 +19,46 @@
 # limitations under the License.
 #
 
-include_recipe 'global_npm_packages'
-include_recipe 'base'
+# Install nodejs if true
+if node['chef-frontend']['install_nodejs']
+  include_recipe "nodejs::nodejs_from_source"
+end
+
+#This will install all global npm packages
+node['chef-frontend']['global_npm_packages'].each do |package|
+  nodejs_npm package
+end
+
+# Clone the repo into a directory
+git "#{node['chef-frontend']['app']['repository']['name']}_repo" do
+  repository node['chef-frontend']['app']['repository']['git_url']
+  revision node['chef-frontend']['app']['repository']['revision']
+  destination node['chef-frontend']['app']['directory']
+  ssh_wrapper node['chef-frontend']['app']['repository']['git_ssh_key'] if node['chef-frontend']['app']['repository']['git_ssh_key']
+  user node['chef-frontend']['user']
+  action :sync
+end
+
+# Run npm install as a user and download dependency
+execute 'NPM Install' do
+  command 'npm install'
+  cwd node['chef-frontend']['app']['directory']
+  environment 'HOME' => node['chef-frontend']['home'], 'USER' => node['chef-frontend']['user']
+  user node['chef-frontend']['user']
+end
+
+# Run bower install to get bower componets
+execute 'Bower Install' do
+  command 'bower install'
+  cwd node['chef-frontend']['app']['directory']
+  environment 'HOME' => node['chef-frontend']['home'], 'USER' => node['chef-frontend']['user']
+  user node['chef-frontend']['user']
+end
+
+# Run the gulp task to build the project
+execute 'Gulp Build' do
+  command node['chef-frontend']['app']['gulp_build_task']
+  cwd node['chef-frontend']['app']['directory']
+  environment 'HOME' => node['chef-frontend']['home'], 'USER' => node['chef-frontend']['user']
+  user node['chef-frontend']['user']
+end

@@ -1,6 +1,6 @@
 name             'chef-frontend'
-maintainer       'YOUR_NAME'
-maintainer_email 'YOUR_EMAIL'
+maintainer       'Abdul Hagi'
+maintainer_email 'muridiv.1@gmail.com'
 license          'All rights reserved'
 description      'Installs/Configures chef-frontend'
 long_description 'Installs/Configures chef-frontend'
